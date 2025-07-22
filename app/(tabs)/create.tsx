@@ -1,0 +1,97 @@
+import { AntDesign, Feather } from "@expo/vector-icons";
+import { Link, router, useLocalSearchParams } from "expo-router";
+import { useAtom } from "jotai";
+import { useState } from "react";
+import { Image, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TextInput, View } from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { selectedGroupAtom } from "../atoms";
+
+export default function CreateScreen() {
+  const [title, setTitle] = useState<any>('')
+  const [body, setBody] = useState<any>('')
+  const [image, setImage] = useState<string | null>(null);
+  const [group, setGroup] = useAtom(selectedGroupAtom)
+
+  function goBack() {
+    setTitle('')
+    setBody('')
+    setGroup(null)
+    router.back()
+  }
+
+  function pickImage() {
+    // Implement image picking logic here
+  }
+
+  return (
+    <SafeAreaView className="flex-1 px-5">
+      {/* Header  */}
+      <View className="flex-row justify-between px-1 mt-4">
+        <AntDesign
+          onPress={goBack}
+          name="close"
+          size={26} />
+        <Pressable>
+          <Text className="bg-[#115BCA] text-white py-1 px-2 rounded-full">Post</Text>
+        </Pressable>
+      </View >
+
+      {/* Community Selector  */}
+      <KeyboardAvoidingView
+        className="flex-1"
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
+        <ScrollView>
+          <Link href="/GroupSelector" asChild>
+            <Pressable className="flex-row self-start mt-3 bg-[#dbd7d7] rounded-full px-3 py-2 gap-2">
+              {
+                group ? (
+                  <>
+                    <Image
+                      source={{ uri: group.image }}
+                      style={{ width: 25, height: 25, borderRadius: 15 }}
+                    />
+                    <Text className="font-bold">
+                      {group.name}
+                    </Text>
+                  </>
+                )
+                  : (
+                    <>
+                      <Text className="bg-black text-white px-1 rounded-full">/r</Text>
+                      <Text className="font-bold">
+                        Select a community
+                      </Text>
+                    </>
+                  )}
+            </Pressable>
+          </Link>
+
+
+          {/* Inputs  */}
+          <TextInput
+            placeholder="Title"
+            className="text-2xl font-bold py-4"
+            multiline
+            value={title}
+            onChangeText={(text) => setTitle(text)}
+          />
+
+          <TextInput
+            placeholder="Body text (optional)"
+            className="text-md py-4"
+            multiline
+            value={body}
+            onChangeText={(text) => setBody(text)}
+          />
+        </ScrollView>
+        <View style={{ flexDirection: 'row', gap: 20, padding: 10 }}>
+          <Feather name="link" size={20} color="black" />
+          <Feather name="image" size={20} color="black" onPress={pickImage} />
+          <Feather name="youtube" size={20} color="black" />
+          <Feather name="list" size={20} color="black" />
+        </View>
+      </KeyboardAvoidingView>
+    </SafeAreaView >
+  );
+}

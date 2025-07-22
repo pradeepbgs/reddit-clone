@@ -1,39 +1,44 @@
-import { View, Text, Image, TouchableOpacity, SafeAreaView } from "react-native";
+import { View, Text, Image, TouchableOpacity, SafeAreaView, Pressable } from "react-native";
 import { formatDistanceToNowStrict } from 'date-fns';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { Link, router } from "expo-router";
 
-interface PostListItemProps {
-    post: {
+interface Post {
+    id: string;
+    title: string;
+    created_at: string;
+    upvotes: number;
+    nr_of_comments: number;
+    description: string;
+    image: string;
+    group: {
         id: string;
-        title: string;
-        created_at: string;
-        upvotes: number;
-        nr_of_comments: number;
-        description: string;
+        name: string;
         image: string;
-        group: {
-            id: string;
-            name: string;
-            image: string;
-        };
-        user: {
-            id: string;
-            name: string;
-            image: string;
-        };
     };
-}
+    user: {
+        id: string;
+        name: string;
+        image: string;
+    };
+};
 
-export default function PostListItem({ post }: PostListItemProps) {
+export default function PostListItem({ post, isDetailedPost }: { post: Post, isDetailedPost?: boolean }) {
     return (
-        <SafeAreaView className="px-4 py-3 border-b border-gray-200">
+        <Pressable
+            onPress={() => !isDetailedPost && router.push(`/post/${post.id}`)}
+            className="px-4 py-3 border-b border-gray-200"
+        >
             {/* Header */}
             <View className="flex-row justify-between items-center mb-2">
                 <View className="flex-row items-center space-x-2 gap-1">
                     <Image source={{ uri: post.group.image }} className="h-10 w-10 rounded-full" />
                     <View>
                         <Text className="font-semibold">{post.group.name}</Text>
-                        {/* <Text className="text-sm">{post.user.name}</Text> */}
+                        {
+                            isDetailedPost
+                            && <Text className="text-sm">{post.user.name}</Text>
+                        }
                         <Text className="text-xs text-gray-500">
                             {formatDistanceToNowStrict(new Date(post.created_at))} ago
                         </Text>
@@ -49,19 +54,19 @@ export default function PostListItem({ post }: PostListItemProps) {
             <Text className="font-bold text-lg mb-2">{post.title}</Text>
 
             {/* Image or Description */}
-            {post.image ? (
+            {post.image && (
                 <Image
                     source={{ uri: post.image }}
                     className="h-72 w-full rounded-2xl mb-2"
                     resizeMode="cover"
                 />
-            ) : (
-                post.description && (
-                    <Text numberOfLines={3} className="text-gray-700 mb-2">
+            )}
+            {
+                isDetailedPost && post.description && (
+                    <Text numberOfLines={isDetailedPost ? undefined : 3} className="text-gray-700 mb-2">
                         {post.description}
                     </Text>
-                )
-            )}
+                )}
 
             {/* Footer */}
             <View className="flex-row justify-between items-center mt-2">
@@ -85,6 +90,6 @@ export default function PostListItem({ post }: PostListItemProps) {
                     <MaterialCommunityIcons name="share-outline" size={20} />
                 </View>
             </View>
-        </SafeAreaView>
+        </Pressable>
     );
 }

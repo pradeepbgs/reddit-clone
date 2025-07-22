@@ -25,6 +25,7 @@ export default function Page() {
 
     // Start the sign-in process using the email and password provided
     try {
+      
       const signInAttempt = await signIn.create({
         identifier: emailAddress,
         password,

@@ -1,24 +1,33 @@
-import { Tabs } from "expo-router";
+import { Redirect, Tabs } from "expo-router";
 import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
 import { useAuth } from "@clerk/clerk-expo";
+import { StatusBar } from "expo-status-bar";
 
 export default function TabLayout() {
-    const { signOut } = useAuth()
+    const { isLoaded, isSignedIn, signOut } = useAuth()
+    if (!isLoaded) return null
+
+    if (!isSignedIn) {
+        return <Redirect href={'/sign-in'} />
+    }
+
     return (
         <Tabs
             screenOptions={{
                 tabBarActiveTintColor: 'black',
+                headerShown: false,
                 headerRight: () => (
                     <Feather
                         name="log-out"
                         size={20}
                         color={'red'}
                         className="mr-3"
-                        onPress={() => signOut()} 
+                        onPress={() => signOut()}
                     />
                 ),
             }}
         >
+            <StatusBar style="dark" />
             <Tabs.Screen
                 name="index"
                 options={{
@@ -40,6 +49,8 @@ export default function TabLayout() {
                 options={{
                     title: 'Create',
                     tabBarIcon: ({ color }) => <AntDesign name="plus" size={24} color={color} />,
+                    headerShown: false,
+                    tabBarStyle: { display: 'none' },
                 }}
             />
             <Tabs.Screen
