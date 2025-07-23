@@ -2,6 +2,7 @@ import * as React from 'react'
 import { Text, TextInput, Button, Platform, KeyboardAvoidingView, StyleSheet } from 'react-native'
 import { useSignUp } from '@clerk/clerk-expo'
 import { useRouter } from 'expo-router'
+import { supabase } from '@/lib/supabase'
 
 export default function SignUpScreen() {
   const { isLoaded, signUp, setActive } = useSignUp()
@@ -49,6 +50,12 @@ export default function SignUpScreen() {
       // If verification was completed, set the session to active
       // and redirect the user
       if (signUpAttempt.status === 'complete') {
+        await supabase.from('users').insert(
+          { 
+            id: signUpAttempt.createdUserId, 
+            name :"pradeep",
+          }
+        )
         await setActive({ session: signUpAttempt.createdSessionId })
         router.replace('/')
       } else {

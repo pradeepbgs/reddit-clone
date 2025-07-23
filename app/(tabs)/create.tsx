@@ -2,11 +2,14 @@ import { AntDesign, Feather } from "@expo/vector-icons";
 import { Link, router, useLocalSearchParams } from "expo-router";
 import { useAtom } from "jotai";
 import { useState } from "react";
-import { Image, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TextInput, View } from "react-native";
+import { Alert, Image, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { selectedGroupAtom } from "../atoms";
+import { usePost } from "@/services/api";
+import { useAuth } from "@clerk/clerk-expo";
 
 export default function CreateScreen() {
+  const { userId } = useAuth()
   const [title, setTitle] = useState<any>('')
   const [body, setBody] = useState<any>('')
   const [image, setImage] = useState<string | null>(null);
@@ -23,6 +26,12 @@ export default function CreateScreen() {
     // Implement image picking logic here
   }
 
+  const { mutateAsync: handlePost, isError, isPending, error } = usePost()
+
+  if (isError) {
+    Alert.alert("Failed to create post")
+  }
+
   return (
     <SafeAreaView className="flex-1 px-5">
       {/* Header  */}
@@ -31,8 +40,20 @@ export default function CreateScreen() {
           onPress={goBack}
           name="close"
           size={26} />
-        <Pressable>
-          <Text className="bg-[#115BCA] text-white py-1 px-2 rounded-full">Post</Text>
+        <Pressable
+          onPress={() => handlePost({
+            title,
+            group_id: group?.id,
+            user_id: userId,
+            description: body
+          })}
+          disabled={isPending}
+        >
+          <Text className="bg-[#115BCA] text-white py-1 px-2 rounded-full">
+            {
+              isPending ? 'Posting...' : 'Post'
+            }
+          </Text>
         </Pressable>
       </View >
 

@@ -8,6 +8,7 @@ import {
   Pressable,
   StyleSheet,
   SafeAreaView,
+  ActivityIndicator,
 } from "react-native";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { AntDesign, Entypo, MaterialIcons } from "@expo/vector-icons";
@@ -16,6 +17,7 @@ import CommentListItem from "@/components/CommentListItem";
 import posts from "../../assets/data/posts.json";
 import comments from "../../assets/data/comments.json";
 import { useState, useRef, useMemo, useCallback } from "react";
+import { useFetchPostById } from "@/services/api";
 
 export default function PostScreen() {
   const { id } = useLocalSearchParams();
@@ -24,15 +26,34 @@ export default function PostScreen() {
   const [replyToId, setReplyToId] = useState<string | null>(null);
   const inputRef = useRef<TextInput>(null);
 
-  const detailedPost = useMemo(() => posts.find((post) => post.id === id), [id]);
+  // const detailedPost = useMemo(() => posts.find((post) => post.id === id), [id]);
   const postComments = useMemo(() => comments.filter((comment) => comment.post_id === id), [id])
 
-  if (!detailedPost) return <Text>Post not found</Text>;
+  const { data:post, isLoading, isError, error } = useFetchPostById(id as string)
 
-  const handleReplyButtonPress = useCallback((commentId: string) => {
-    setReplyToId(commentId);
-    inputRef.current?.focus();
-  }, []);
+  if (isLoading) {
+    return (
+      <View className="flex-1 justify-center items-center">
+        <ActivityIndicator size={25} />
+      </View>
+    )
+  }
+
+
+  // if (error) {
+  //   return (
+  //     <View className="flex-1 justify-center items-center">
+  //       <Text className="text-red-500 px-5">{error?.message ?? "Something went wrong"}</Text>
+  //     </View>
+  //   )
+  // }
+
+  // if (!detailedPost) return <Text>Post not found</Text>;
+
+  // const handleReplyButtonPress = useCallback((commentId: string) => {
+  //   setReplyToId(commentId);
+  //   inputRef.current?.focus();
+  // }, []);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -58,12 +79,12 @@ export default function PostScreen() {
         <FlatList
           keyExtractor={(item) => item.id}
           data={postComments}
-          ListHeaderComponent={<PostListItem post={detailedPost} isDetailedPost />}
+          ListHeaderComponent={<PostListItem post={post} isDetailedPost />}
           renderItem={({ item }) => (
             <CommentListItem
               comment={item}
               depth={0}
-              handleReplyPress={handleReplyButtonPress}
+              // handleReplyPress={handleReplyButtonPress}
             />
           )}
           contentContainerStyle={{ paddingBottom: 90 }}

@@ -8,7 +8,7 @@ import { useFetchPost } from "@/services/api";
 // type Post = Table
 
 export default function HomeScreen() {
-  const { data, isLoading, isError, error } = useFetchPost();
+  const { data: posts, isLoading, isError, error, isRefetching, refetch } = useFetchPost();
   // console.log(data)
 
   if (isLoading) {
@@ -33,6 +33,8 @@ export default function HomeScreen() {
       <StatusBar style="dark" />
       <FlatList
         data={posts}
+        refreshing={isRefetching}
+        onRefresh={refetch}
         renderItem={({ item }) => <PostListItem post={item} />}
       />
     </SafeAreaView>

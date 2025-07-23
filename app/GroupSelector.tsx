@@ -1,26 +1,55 @@
 
-import { FlatList, Text, KeyboardAvoidingView, Platform, Pressable, View, TextInput, Image } from "react-native";
+import { FlatList, Text, KeyboardAvoidingView, Platform, Pressable, View, TextInput, Image, ActivityIndicator } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
-import groups from '../assets/data/groups.json'
 import { AntDesign } from "@expo/vector-icons";
 import { useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import { router } from "expo-router";
 import { useSetAtom } from "jotai";
 import { selectedGroupAtom } from "./atoms";
+import { useDebounced, useFetchGroups } from "@/services/api";
 
 export default function GroupSelector() {
     const [search, setSearch] = useState('')
+    const debouncedSearch = useDebounced(search, 300);
+
+    const [refreshing, setRefreshing] = useState(false);
+
     const setGroup = useSetAtom(selectedGroupAtom)
 
+    const { data: groups, isLoading, isError, error, refetch } = useFetchGroups(debouncedSearch)
 
-    const filteredGroups = groups
-        .filter(group => group.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()))
+    if (isLoading) {
+        return (
+            <View className="flex-1 justify-center items-center">
+                <ActivityIndicator size={25} />
+            </View>
+        )
+    }
+
+    if (isError) {
+        return (
+            <View className="flex-1 justify-center items-center">
+                <Text className="text-red-500 px-5">{error?.message ?? "Something went wrong"}</Text>
+            </View>
+        )
+    }
 
     const onGroupSelected = (group: any) => {
         setGroup(group);
         router.back()
     }
+
+
+    const handleRefresh = async () => {
+        try {
+            setRefreshing(true);
+            await refetch();
+        } finally {
+            setRefreshing(false);
+        }
+    };
+
 
     return (
         <SafeAreaView className="px-2">
@@ -28,7 +57,9 @@ export default function GroupSelector() {
             <View className="flex-row items-center justify-between px-1 mt-4">
                 <AntDesign
                     name="close"
-                    size={26} />
+                    size={26} 
+                    onPress={() => router.back()}
+                    />
                 <Pressable className="flex-1 mx-4">
                     <Text className="text-black text-center font-bold py-1 px-2 rounded-full">Post to</Text>
                 </Pressable>
@@ -49,7 +80,9 @@ export default function GroupSelector() {
             </KeyboardAvoidingView>
 
             <FlatList
-                data={filteredGroups}
+                data={groups}
+                refreshing={refreshing}
+                onRefresh={handleRefresh}
                 renderItem={({ item }) => (
                     <>
                         <Pressable
