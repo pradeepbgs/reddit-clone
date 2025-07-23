@@ -1,8 +1,7 @@
-import { ActivityIndicator, FlatList, Text, View } from "react-native";
+import { ActivityIndicator, FlatList, SafeAreaView, Text, View } from "react-native";
 import posts from '../../assets/data/posts.json'
 import PostListItem from "@/components/PostListItem";
 import { StatusBar } from "expo-status-bar";
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFetchPost } from "@/services/api";
 
 // type Post = Table
@@ -28,7 +27,10 @@ export default function HomeScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1">
+    <SafeAreaView
+      style={{ flex: 1 }}
+      // edges={['top']}
+    >
 
       <StatusBar style="dark" />
       <FlatList

@@ -31,6 +31,7 @@ export default function TabLayout() {
             <Tabs.Screen
                 name="index"
                 options={{
+                    headerShown:true,
                     headerTitle: 'Reddit',
                     title: 'Home',
                     headerTintColor: "#FF5700",

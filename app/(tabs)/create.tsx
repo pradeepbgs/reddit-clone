@@ -28,6 +28,19 @@ export default function CreateScreen() {
 
   const { mutateAsync: handlePost, isError, isPending, error } = usePost()
 
+  const handleCreatePost = async () => {
+    if (!group) {
+      Alert.alert('select a group first')
+      return;
+    }
+    handlePost({
+      title,
+      group_id: group?.id,
+      user_id: userId,
+      description: body
+    })
+  }
+
   if (isError) {
     Alert.alert("Failed to create post")
   }
@@ -41,12 +54,7 @@ export default function CreateScreen() {
           name="close"
           size={26} />
         <Pressable
-          onPress={() => handlePost({
-            title,
-            group_id: group?.id,
-            user_id: userId,
-            description: body
-          })}
+          onPress={handleCreatePost}
           disabled={isPending}
         >
           <Text className="bg-[#115BCA] text-white py-1 px-2 rounded-full">

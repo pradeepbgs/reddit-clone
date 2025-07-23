@@ -1,6 +1,9 @@
 import { supabase } from "@/lib/supabase";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
+import { goBack } from "expo-router/build/global-state/routing";
 import { useState, useEffect } from "react";
+
+const queryClient = new QueryClient()
 
 export function useDebounced<T>(value: T, delay: number = 300): T {
     const [debounced, setDebounced] = useState(value);
@@ -115,6 +118,11 @@ const createPost = async (postData: any) => {
 export function usePost() {
     return useMutation({
         mutationKey: ['post'],
-        mutationFn: (postData: any) => createPost(postData)
+        mutationFn: (postData: any) => createPost(postData),
+        onSuccess: () => {
+            // invalidate the query
+            queryClient.invalidateQueries({ queryKey: ['posts'] })
+            goBack()
+        },
     });
 }
