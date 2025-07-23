@@ -19,7 +19,7 @@ const CommentListItem = ({ comment, depth, handleReplyPress }: CommentListItemPr
 
     return (
         <View
-            className="bg-white mt-4 px-3 py-3 gap-2 border-l-[#E5E7EB]"
+            className="bg-white mt-4 px-3 py-1 gap-2 border-l-[#E5E7EB]"
         >
             {/* User Info */}
             <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
@@ -60,13 +60,26 @@ const CommentListItem = ({ comment, depth, handleReplyPress }: CommentListItemPr
                 </Pressable>
             )}
 
-            {showReplies && (
+            {/* {showReplies && (
                 <FlatList
                     data={comment.replies}
                     keyExtractor={(reply) => reply.id}
                     renderItem={({ item }) => <CommentListItem comment={item} depth={depth + 1} handleReplyPress={handleReplyPress} />}
                 />
-            )}
+            )} */}
+
+            {
+                showReplies && (
+                    comment.replies.map((item) => (
+                        <CommentListItem
+                            key={item.id}
+                            comment={item}
+                            depth={depth + 1}
+                            handleReplyPress={handleReplyPress}
+                        />
+                    ))
+                )
+            }
 
             {
                 showReplies && (
