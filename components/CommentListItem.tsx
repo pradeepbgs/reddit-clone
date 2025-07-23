@@ -1,7 +1,7 @@
 import { View, Text, Image, Pressable, FlatList } from "react-native";
 import { Entypo, Octicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { formatDistanceToNowStrict } from 'date-fns';
-import { useState } from "react";
+import React, { memo, useState } from "react";
 
 
 type CommentListItemProps = {
@@ -12,17 +12,14 @@ type CommentListItemProps = {
 
 const CommentListItem = ({ comment, depth, handleReplyPress }: CommentListItemProps) => {
     const [showReplies, setShowReplies] = useState<boolean>(false)
+    console.log('i am re rendered')
+    // const handleReply = async (id: string) => {
+    //     console.log("id ", id)
+    // }
 
     return (
         <View
-            style={{
-                backgroundColor: "white",
-                marginTop: 10,
-                paddingHorizontal: 10,
-                paddingVertical: 5,
-                gap: 10,
-                borderLeftColor: "#E5E7EB",
-            }}
+            className="bg-white mt-4 px-3 py-3 gap-2 border-l-[#E5E7EB]"
         >
             {/* User Info */}
             <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
@@ -45,7 +42,7 @@ const CommentListItem = ({ comment, depth, handleReplyPress }: CommentListItemPr
             {/* Comment Actions */}
             <View style={{ flexDirection: "row", justifyContent: "flex-end", alignItems: "center", gap: 14 }}>
                 <Entypo name="dots-three-horizontal" size={15} color="#737373" />
-                <Octicons name="reply" size={16} color="#737373" onPress={() => console.log('Reply button pressed')} />
+                <Octicons name="reply" size={16} color="#737373" onPress={() => handleReplyPress(comment.id)} />
                 <MaterialCommunityIcons name="trophy-outline" size={16} color="#737373" />
                 <View style={{ flexDirection: "row", gap: 5, alignItems: "center" }}>
                     <MaterialCommunityIcons name="arrow-up-bold-outline" size={18} color="#737373" />
@@ -55,7 +52,7 @@ const CommentListItem = ({ comment, depth, handleReplyPress }: CommentListItemPr
             </View>
 
             {/* Show Replies Button */}
-            {(comment.replies.length > 0 && !showReplies) && (
+            {(comment.replies.length > 0 && !showReplies && depth < 5) && (
                 <Pressable
                     onPress={() => setShowReplies(!showReplies)}
                     style={{ backgroundColor: '#EDEDED', borderRadius: 3, paddingVertical: 3, alignItems: 'center' }}>
@@ -80,9 +77,10 @@ const CommentListItem = ({ comment, depth, handleReplyPress }: CommentListItemPr
                     </Pressable>
                 )
             }
+
         </View>
 
     )
 };
 
-export default CommentListItem;
+export default React.memo(CommentListItem);

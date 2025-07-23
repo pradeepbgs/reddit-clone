@@ -31,49 +31,64 @@
     ]
   },
   {
-    "id": "comment-3",
-    "post_id": "post-1",
-    "user_id": "user-def",
+    "id": "comment-9",
+    "post_id": "post-2",
+    "user_id": "user-vwx",
     "parent_id": null,
-    "comment": "Nicely written, keep up the good work!",
-    "created_at": "2025-02-19T12:02:00Z",
-    "upvotes": 4,
+    "comment": "This is a really interesting perspective on the topic!",
+    "created_at": "2025-02-21T09:00:00Z",
+    "upvotes": 15,
     "user": {
-      "id": "user-9",
-      "name": "u/User9",
-      "image": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/10.png"
+      "id": "user-13",
+      "name": "u/User13",
+      "image": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/4.png"
     },
     "replies": [
       {
-        "id": "comment-4",
-        "post_id": "post-1",
-        "user_id": "user-ghi",
-        "parent_id": "comment-3",
-        "comment": "Yep, wanted to say exactly the same",
-        "created_at": "2025-02-20T10:06:00Z",
-        "upvotes": 2,
+        "id": "comment-10",
+        "post_id": "post-2",
+        "user_id": "user-yz1",
+        "parent_id": "comment-9",
+        "comment": "I learned something new today, thanks for sharing!",
+        "created_at": "2025-02-21T10:30:00Z",
+        "upvotes": 8,
         "user": {
-          "id": "user-7",
-          "name": "u/User7",
-          "image": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/6.png"
+          "id": "user-14",
+          "name": "u/User14",
+          "image": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/3.png"
         },
-        "replies": [
-          {
-            "id": "comment-5",
-            "post_id": "post-1",
-            "user_id": "user-jkl",
-            "parent_id": "comment-4",
-            "comment": "Totally!",
-            "created_at": "2025-02-20T12:08:00Z",
-            "upvotes": 1,
-            "user": {
-              "id": "user-9",
-              "name": "u/User9",
-              "image": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/8.png"
-            },
-            "replies": []
-          }
-        ]
+        "replies": []
+      }
+    ]
+  },
+  {
+    "id": "comment-11",
+    "post_id": "post-3",
+    "user_id": "user-234",
+    "parent_id": null,
+    "comment": "Great analysis! The examples really help clarify the concepts.",
+    "created_at": "2025-02-22T11:15:00Z",
+    "upvotes": 20,
+    "user": {
+      "id": "user-15",
+      "name": "u/User15",
+      "image": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/2.png"
+    },
+    "replies": [
+      {
+        "id": "comment-12",
+        "post_id": "post-3",
+        "user_id": "user-567",
+        "parent_id": "comment-11",
+        "comment": "Couldn't agree more. Very well explained!",
+        "created_at": "2025-02-22T12:45:00Z",
+        "upvotes": 10,
+        "user": {
+          "id": "user-16",
+          "name": "u/User16",
+          "image": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/1.png"
+        },
+        "replies": []
       }
     ]
   }
