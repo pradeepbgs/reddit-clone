@@ -116,3 +116,26 @@ export function usePost() {
         },
     });
 }
+
+
+const deletePostById = async (id: string, supabase: any) => {
+    try {
+        const { error } = await supabase.from("posts").delete().eq("id", id);
+
+        if (error) throw error;
+    } catch (error) {
+        console.error("Error deleting post:", error);
+        throw error;
+    }
+ 
+}
+export function useDeletePostById(id: string, supabase: any) {
+    return useMutation({
+        mutationKey: ["deletePost", id],
+        mutationFn: () => deletePostById(id, supabase),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["posts"] });
+            goBack();
+        },
+    });
+}

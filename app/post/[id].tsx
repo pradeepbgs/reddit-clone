@@ -17,7 +17,7 @@ import CommentListItem from "@/components/CommentListItem";
 import posts from "../../assets/data/posts.json";
 import comments from "../../assets/data/comments.json";
 import { useState, useRef, useMemo, useCallback } from "react";
-import { useFetchPostById } from "@/services/api";
+import { useDeletePostById, useFetchPostById } from "@/services/api";
 import { useSupabase } from "@/lib/supabase";
 
 export default function PostScreen() {
@@ -32,7 +32,8 @@ export default function PostScreen() {
   // const detailedPost = useMemo(() => posts.find((post) => post.id === id), [id]);
   const postComments = useMemo(() => comments.filter((comment) => comment.post_id === id), [id])
 
-  const { data:post, isLoading, isError, error } = useFetchPostById(id as string, supabase)
+  const { data: post, isLoading, isError, error } = useFetchPostById(id as string, supabase)
+  const { mutate: deletePost } = useDeletePostById(id as string, supabase)
 
   if (isLoading) {
     return (
@@ -70,7 +71,9 @@ export default function PostScreen() {
             animation: "slide_from_bottom",
             headerRight: () => (
               <View style={{ flexDirection: "row", gap: 10 }}>
-                {/* <Entypo name="trash" size={24} color="white" /> */}
+                <Entypo
+                  onPress={() => deletePost()}
+                  name="trash" size={24} color="white" /> 
                 <AntDesign name="search1" size={24} color="white" />
                 <MaterialIcons name="sort" size={27} color="white" />
                 <Entypo name="dots-three-horizontal" size={24} color="white" />
@@ -87,7 +90,7 @@ export default function PostScreen() {
             <CommentListItem
               comment={item}
               depth={0}
-              // handleReplyPress={handleReplyButtonPress}
+            // handleReplyPress={handleReplyButtonPress}
             />
           )}
           contentContainerStyle={{ paddingBottom: 90 }}
