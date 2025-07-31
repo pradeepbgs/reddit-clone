@@ -48,7 +48,7 @@ export default function CreateScreen() {
     setTitle('');
     setBody('');
     setGroup(null);
-    router.back();
+    router.canGoBack()
   }
 
   if (isError) {

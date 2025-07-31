@@ -32,7 +32,7 @@ export default function PostScreen() {
   // const detailedPost = useMemo(() => posts.find((post) => post.id === id), [id]);
   const postComments = useMemo(() => comments.filter((comment) => comment.post_id === id), [id])
 
-  const { data: post, isLoading, isError, error } = useFetchPostById(id as string, supabase)
+  const { data: post, isLoading, isError, error, refetch } = useFetchPostById(id as string, supabase)
   const { mutate: deletePost } = useDeletePostById(id as string, supabase)
 
   if (isLoading) {
@@ -43,21 +43,9 @@ export default function PostScreen() {
     )
   }
 
-
-  // if (error) {
-  //   return (
-  //     <View className="flex-1 justify-center items-center">
-  //       <Text className="text-red-500 px-5">{error?.message ?? "Something went wrong"}</Text>
-  //     </View>
-  //   )
-  // }
-
-  // if (!detailedPost) return <Text>Post not found</Text>;
-
-  // const handleReplyButtonPress = useCallback((commentId: string) => {
-  //   setReplyToId(commentId);
-  //   inputRef.current?.focus();
-  // }, []);
+  const handleRefresh = () => {
+    refetch()
+  }
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -73,7 +61,7 @@ export default function PostScreen() {
               <View style={{ flexDirection: "row", gap: 10 }}>
                 <Entypo
                   onPress={() => deletePost()}
-                  name="trash" size={24} color="white" /> 
+                  name="trash" size={24} color="white" />
                 <AntDesign name="search1" size={24} color="white" />
                 <MaterialIcons name="sort" size={27} color="white" />
                 <Entypo name="dots-three-horizontal" size={24} color="white" />
@@ -86,6 +74,8 @@ export default function PostScreen() {
           keyExtractor={(item) => item.id}
           data={postComments}
           ListHeaderComponent={<PostListItem post={post} isDetailedPost />}
+          onRefresh={handleRefresh}
+          refreshing={isLoading}
           renderItem={({ item }) => (
             <CommentListItem
               comment={item}
