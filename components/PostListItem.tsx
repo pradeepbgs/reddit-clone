@@ -4,7 +4,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { router } from "expo-router";
 import React from "react";
 import { useSupabase } from "@/lib/supabase";
-import { useUpvote } from "@/services/api";
+import { useFetchPostUpvotes, useUpvote } from "@/services/api";
 
 interface Post {
     id: string;
@@ -28,9 +28,7 @@ function PostListItem({ post, isDetailedPost }: { post: Post, isDetailedPost?: b
     const supabase = useSupabase();
     const { mutate: handleUpvote, isPending: isUpvoting } = useUpvote(post.id, supabase);
 
-    const upvoteCount = Array.isArray(post.upvotes)
-        ? post.upvotes[0]?.count ?? 0
-        : post.upvotes;
+    const { data:upvoteCount } = useFetchPostUpvotes(post.id, supabase)
 
     return (
         <Pressable

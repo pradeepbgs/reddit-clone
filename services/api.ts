@@ -44,7 +44,7 @@ const fetchPostById = async (id: string, supabase: any) => {
     try {
         const { data, error } = await supabase
             .from("posts")
-            .select("*, group:groups(*), user:users!posts_user_id_fkey(*), upvotes(count)")
+            .select("*, group:groups(*), user:users!posts_user_id_fkey(*)")
             .eq("id", id)
             .single();
 
@@ -127,7 +127,7 @@ const deletePostById = async (id: string, supabase: any) => {
         console.error("Error deleting post:", error);
         throw error;
     }
- 
+
 }
 export function useDeletePostById(id: string, supabase: any) {
     return useMutation({
@@ -160,5 +160,28 @@ export function useUpvote(id: string, supabase: any) {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["posts"] });
         },
+    });
+}
+
+const fetchPostUpvotes = async (id: string, supabase: any) => {
+    try {
+        const { count, error } = await supabase
+            .from("upvotes")
+            .select("*", { count: "exact", head: true })
+            .eq("post_id", id);
+
+        if (error) throw error;
+        return count ?? 0;
+    } catch (error) {
+        console.error("Error fetching upvotes:", error);
+        throw error;
+    }
+};
+
+export function useFetchPostUpvotes(id: string, supabase: any) {
+    return useQuery({
+        queryKey: ["upvotes", id],
+        queryFn: () => fetchPostUpvotes(id, supabase),
+        staleTime: 10000,
     });
 }
