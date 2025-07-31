@@ -1,50 +1,30 @@
-# Welcome to your Expo app 👋
+# Reddit Clone App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A fully functional Reddit-style mobile application built with modern technologies.
 
-## Get started
+---
 
-1. Install dependencies
+## Tech Stack
 
-   ```bash
-   npm install
-   ```
+* **React Native (Expo)** – Cross-platform mobile development.
+* **Supabase** – Backend-as-a-Service for database and real-time features.
+* **Clerk** – Authentication and user management.
+* **React Query** – Data fetching and caching.
+* **Tailwind CSS (via NativeWind)** – Utility-first styling (optional but common).
+* **TypeScript** – Safer, strongly-typed development.
 
-2. Start the app
+---
 
-   ```bash
-   npx expo start
-   ```
+## Images
 
-In the output, you'll find options to open the app in a
+![Post View](./assets/images/app1.jpg)
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+![Post View](./assets/images/app2.jpg)
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+![Post View](./assets/images/app3.jpg)
 
-## Get a fresh project
+![Post View](./assets/images/app4.jpg)
 
-When you're ready, run:
+![Post View](./assets/images/app5.jpg)
 
-```bash
-npm run reset-project
-```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
