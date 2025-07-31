@@ -16,11 +16,6 @@ interface Post {
         name: string;
         image: string;
     };
-    user: {
-        id: string;
-        name: string;
-        image: string;
-    };
 };
 
 export default function PostListItem({ post, isDetailedPost }: { post: Post, isDetailedPost?: boolean }) {
@@ -37,7 +32,7 @@ export default function PostListItem({ post, isDetailedPost }: { post: Post, isD
                         <Text className="font-semibold">{post.group.name}</Text>
                         {
                             isDetailedPost
-                            && <Text className="text-sm">{post.user.name}</Text>
+                            && <Text className="text-sm">{post?.user?.name}</Text>
                         }
                         <Text className="text-xs text-gray-500">
                             {formatDistanceToNowStrict(new Date(post.created_at))} ago

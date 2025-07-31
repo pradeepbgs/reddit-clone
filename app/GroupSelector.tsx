@@ -8,16 +8,17 @@ import { router } from "expo-router";
 import { useSetAtom } from "jotai";
 import { selectedGroupAtom } from "./atoms";
 import { useDebounced, useFetchGroups } from "@/services/api";
+import { useSupabase } from "@/lib/supabase";
 
 export default function GroupSelector() {
     const [search, setSearch] = useState('')
     const debouncedSearch = useDebounced(search, 300);
-
+    const supabase = useSupabase()
     const [refreshing, setRefreshing] = useState(false);
 
     const setGroup = useSetAtom(selectedGroupAtom)
 
-    const { data: groups, isLoading, isError, error, refetch } = useFetchGroups(debouncedSearch)
+    const { data: groups, isLoading, isError, error, refetch } = useFetchGroups(debouncedSearch, supabase)
 
     if (isLoading) {
         return (

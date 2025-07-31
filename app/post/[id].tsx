@@ -18,6 +18,7 @@ import posts from "../../assets/data/posts.json";
 import comments from "../../assets/data/comments.json";
 import { useState, useRef, useMemo, useCallback } from "react";
 import { useFetchPostById } from "@/services/api";
+import { useSupabase } from "@/lib/supabase";
 
 export default function PostScreen() {
   const { id } = useLocalSearchParams();
@@ -26,10 +27,12 @@ export default function PostScreen() {
   const [replyToId, setReplyToId] = useState<string | null>(null);
   const inputRef = useRef<TextInput>(null);
 
+  const supabase = useSupabase()
+
   // const detailedPost = useMemo(() => posts.find((post) => post.id === id), [id]);
   const postComments = useMemo(() => comments.filter((comment) => comment.post_id === id), [id])
 
-  const { data:post, isLoading, isError, error } = useFetchPostById(id as string)
+  const { data:post, isLoading, isError, error } = useFetchPostById(id as string, supabase)
 
   if (isLoading) {
     return (

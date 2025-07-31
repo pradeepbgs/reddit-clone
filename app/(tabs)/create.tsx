@@ -7,6 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { selectedGroupAtom } from "../atoms";
 import { usePost } from "@/services/api";
 import { useAuth } from "@clerk/clerk-expo";
+import { useSupabase } from "@/lib/supabase";
 
 export default function CreateScreen() {
   const { userId } = useAuth()
@@ -14,6 +15,8 @@ export default function CreateScreen() {
   const [body, setBody] = useState<any>('')
   const [image, setImage] = useState<string | null>(null);
   const [group, setGroup] = useAtom(selectedGroupAtom)
+
+  const supabase = useSupabase()
 
   function goBack() {
     setTitle('')
@@ -33,12 +36,19 @@ export default function CreateScreen() {
       Alert.alert('select a group first')
       return;
     }
-    handlePost({
-      title,
-      group_id: group?.id,
-      user_id: userId,
-      description: body
+    await handlePost({
+      postData: {
+        title,
+        group_id: group?.id,
+        user_id: userId,
+        description: body
+      },
+      supabase
     })
+    setTitle('');
+    setBody('');
+    setGroup(null);
+    router.back();
   }
 
   if (isError) {

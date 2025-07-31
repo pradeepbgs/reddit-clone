@@ -1,9 +1,9 @@
-import { supabase } from "@/lib/supabase";
+import { useSupabase } from "@/lib/supabase";
 import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import { goBack } from "expo-router/build/global-state/routing";
 import { useState, useEffect } from "react";
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient();
 
 export function useDebounced<T>(value: T, delay: number = 300): T {
     const [debounced, setDebounced] = useState(value);
@@ -16,113 +16,103 @@ export function useDebounced<T>(value: T, delay: number = 300): T {
     return debounced;
 }
 
-
-const fetchPost = async () => {
+const fetchPost = async (supabase: any) => {
     try {
         const { data, error } = await supabase
-            .from('posts')
-            .select('*, group:groups(*), user:users!posts_user_id_fkey(*)')
-            .order('created_at', { ascending: false })
-            .limit(10)
+            .from("posts")
+            .select("*, group:groups(*)")
+            .order("created_at", { ascending: false })
+            .limit(10);
 
-        if (error) {
-            throw error
-        }
-        return data
+        if (error) throw error;
+        return data;
     } catch (error) {
-        console.error('Error fetching posts:', error);
+        console.error("Error fetching posts:", error);
         throw error;
     }
-}
+};
 
-export function useFetchPost() {
+export function useFetchPost(supabase: any) {
     return useQuery({
-        queryKey: ['posts'],
-        queryFn: fetchPost,
-        staleTime: 10000
-    })
-}
-
-const fetchPostById = async (id: string) => {
-    try {
-        const { data, error } = await supabase
-            .from('posts')
-            .select('*, group:groups(*), user:users!posts_user_id_fkey(*)')
-            .eq('id', id)
-            .single()
-
-        if (error) {
-            throw error
-        }
-        return data
-    } catch (error) {
-        console.error('Error fetching post:', error);
-        throw error;
-    }
-}
-
-export function useFetchPostById(id: string) {
-    return useQuery({
-        queryKey: ['post', id],
-        queryFn: () => fetchPostById(id),
-        staleTime: 10000
-    })
-}
-
-const fetchGroups = async (query?: string) => {
-    try {
-        const { data, error } = await supabase
-            .from('groups')
-            .select('*')
-            .ilike('name', `%${query ?? ''}%`)
-            // .limit(10)
-            .order('name', { ascending: true })
-
-        if (error) {
-            throw error
-        }
-        return data
-    } catch (error) {
-        console.error('Error fetching groups:', error);
-        throw error;
-    }
-}
-export function useFetchGroups(query?: string) {
-    return useQuery({
-        queryKey: ['groups', { query }],
-        queryFn: () => fetchGroups(query),
+        queryKey: ["posts"],
+        queryFn: () => fetchPost(supabase),
         staleTime: 10000,
-        placeholderData: (prevData) => prevData
-    })
+    });
 }
 
-
-const createPost = async (postData: any) => {
+const fetchPostById = async (id: string, supabase: any) => {
     try {
         const { data, error } = await supabase
-            .from('posts')
+            .from("posts")
+            .select("*, group:groups(*)")
+            .eq("id", id)
+            .single();
+
+        if (error) throw error;
+        return data;
+    } catch (error) {
+        console.error("Error fetching post:", error);
+        throw error;
+    }
+};
+
+export function useFetchPostById(id: string, supabase: any) {
+    return useQuery({
+        queryKey: ["post", id],
+        queryFn: () => fetchPostById(id, supabase),
+        staleTime: 10000,
+    });
+}
+
+const fetchGroups = async (query: string | undefined, supabase: any) => {
+    try {
+        const { data, error } = await supabase
+            .from("groups")
+            .select("*")
+            .ilike("name", `%${query ?? ""}%`)
+            .order("name", { ascending: true });
+
+        if (error) throw error;
+        return data;
+    } catch (error) {
+        console.error("Error fetching groups:", error);
+        throw error;
+    }
+};
+
+export function useFetchGroups(query?: string, supabase?: any) {
+    return useQuery({
+        queryKey: ["groups", { query }],
+        queryFn: () => fetchGroups(query, supabase),
+        staleTime: 10000,
+        placeholderData: (prevData) => prevData,
+    });
+}
+
+const createPost = async (postData: any, supabase: any) => {
+    try {
+        const { data, error } = await supabase
+            .from("posts")
             .insert(postData)
             .select()
-            .single()
+            .single();
 
-        if (error) {
-            throw error
-        }
-        return data
+        if (error) throw error;
+        return data;
     } catch (error) {
-        console.error('Error posting:', error);
+        console.error("Error posting:", error);
         throw error;
     }
-}
+};
 
 export function usePost() {
     return useMutation({
-        mutationKey: ['post'],
-        mutationFn: (postData: any) => createPost(postData),
+        mutationKey: ["post"],
+        mutationFn: ({ postData, supabase }: { postData: any; supabase: any }) =>
+            createPost(postData, supabase),
         onSuccess: () => {
-            // invalidate the query
-            queryClient.invalidateQueries({ queryKey: ['posts'] })
-            goBack()
+            queryClient.invalidateQueries({ queryKey: ["posts"] });
+            goBack();
         },
     });
 }

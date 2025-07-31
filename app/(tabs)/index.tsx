@@ -3,13 +3,14 @@ import posts from '../../assets/data/posts.json'
 import PostListItem from "@/components/PostListItem";
 import { StatusBar } from "expo-status-bar";
 import { useFetchPost } from "@/services/api";
+import { useSupabase } from "@/lib/supabase";
 
 // type Post = Table
 
 export default function HomeScreen() {
-  const { data: posts, isLoading, isError, error, isRefetching, refetch } = useFetchPost();
+  const supabase = useSupabase()
+  const { data: posts, isLoading, isError, error, isRefetching, refetch } = useFetchPost(supabase);
   // console.log(data)
-
   if (isLoading) {
     return (
       <View className="flex-1 justify-center items-center">
