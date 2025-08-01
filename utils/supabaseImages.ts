@@ -46,32 +46,3 @@ export const getPublicImageUrl = async (
         return '';
     }
 };
-
-
-
-
-// Function to download image from Supabase
-export const downloadImage = async (
-    image: string,
-    supabase: SupabaseClient
-) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            const { error, data } = await supabase.storage
-                .from("images")  // Access the "images" storage bucket
-                .download(image); // Download the file using its path
-
-            if (error) {
-                return reject(error); // If there's an error, reject the Promise
-            }
-
-            const fr = new FileReader(); // Create a FileReader instance
-            fr.readAsDataURL(data); // Convert the fetched binary data to a Data URL
-            fr.onload = () => {
-                resolve(fr.result as string); // Once loaded, resolve the Promise with the Data URL
-            };
-        } catch (error) {
-            reject(error); // Handle unexpected errors
-        }
-    });
-};

@@ -4,9 +4,9 @@ import { AppState } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createClient } from "@supabase/supabase-js";
 import { useSession } from "@clerk/clerk-expo";
+import { supabaseAnonKey, supabaseUrl } from "@/constant";
 
-const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!;
+
 
 // TODO: check if it creates a client everytime we use it
 export const useSupabase = () => {
