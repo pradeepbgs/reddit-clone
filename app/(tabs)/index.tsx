@@ -1,5 +1,4 @@
 import { ActivityIndicator, FlatList, SafeAreaView, Text, View } from "react-native";
-import posts from '../../assets/data/posts.json'
 import PostListItem from "@/components/PostListItem";
 import { StatusBar } from "expo-status-bar";
 import { useFetchPost } from "@/services/api";
@@ -9,7 +8,8 @@ import { useSupabase } from "@/lib/supabase";
 
 export default function HomeScreen() {
   const supabase = useSupabase()
-  const { data: posts, isLoading, isError, error, isRefetching, refetch } = useFetchPost(supabase);
+
+  const { data: posts, isLoading, error, isRefetching, refetch } = useFetchPost(supabase);
   // console.log(data)
   if (isLoading) {
     return (
@@ -30,7 +30,7 @@ export default function HomeScreen() {
   return (
     <SafeAreaView
       style={{ flex: 1 }}
-      // edges={['top']}
+    // edges={['top']}
     >
 
       <StatusBar style="dark" />

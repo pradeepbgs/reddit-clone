@@ -8,6 +8,8 @@ import { selectedGroupAtom } from "../atoms";
 import { usePost } from "@/services/api";
 import { useAuth } from "@clerk/clerk-expo";
 import { useSupabase } from "@/lib/supabase";
+import * as ImagePicker from 'expo-image-picker';
+import { uploadImage } from "@/utils/supabaseImages";
 
 export default function CreateScreen() {
   const { userId } = useAuth()
@@ -22,12 +24,28 @@ export default function CreateScreen() {
     setTitle('')
     setBody('')
     setGroup(null)
+    setImage(null)
     router.back()
   }
 
-  function pickImage() {
-    // Implement image picking logic here
-  }
+  const pickImage = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permission Denied', 'Please allow access to media library to select an image.');
+      return;
+    }
+
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      quality: 1,
+    });
+
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
 
   const { mutateAsync: handlePost, isError, isPending, error } = usePost()
 
@@ -36,18 +54,33 @@ export default function CreateScreen() {
       Alert.alert('select a group first')
       return;
     }
+
+    let imageUrl: string | null = null;
+
+    if (image) {
+      try {
+        imageUrl = await uploadImage(image, supabase);
+      } catch (err) {
+        console.error("Image upload failed", err);
+        Alert.alert("Failed to upload image");
+        return;
+      }
+    }
+
     await handlePost({
       postData: {
         title,
         group_id: group?.id,
         user_id: userId,
-        description: body
+        description: body,
+        image:imageUrl
       },
       supabase
     })
     setTitle('');
     setBody('');
     setGroup(null);
+    setImage(null);
     router.canGoBack()
   }
 
@@ -116,6 +149,27 @@ export default function CreateScreen() {
             onChangeText={(text) => setTitle(text)}
           />
 
+          {image && (
+            <View style={{ paddingBottom: 20 }}>
+              <AntDesign
+                name="close"
+                size={25}
+                color="white"
+                onPress={() => setImage(null)}
+                style={{
+                  position: 'absolute',
+                  zIndex: 1,
+                  right: 10,
+                  top: 10,
+                  padding: 5,
+                  backgroundColor: '#00000090',
+                  borderRadius: 20,
+                }}
+              />
+              <Image source={{ uri: image }} style={{ width: '100%', aspectRatio: 1 }} />
+            </View>
+          )}
+
           <TextInput
             placeholder="Body text (optional)"
             className="text-md py-4"
@@ -126,7 +180,9 @@ export default function CreateScreen() {
         </ScrollView>
         <View style={{ flexDirection: 'row', gap: 20, padding: 10 }}>
           <Feather name="link" size={20} color="black" />
-          <Feather name="image" size={20} color="black" onPress={pickImage} />
+          <Feather
+            onPressIn={() => pickImage()}
+            name="image" size={20} color="black" onPress={pickImage} />
           <Feather name="youtube" size={20} color="black" />
           <Feather name="list" size={20} color="black" />
         </View>

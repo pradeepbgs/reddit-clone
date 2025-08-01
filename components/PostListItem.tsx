@@ -2,9 +2,10 @@ import { View, Text, Image, TouchableOpacity, Pressable } from "react-native";
 import { formatDistanceToNowStrict } from 'date-fns';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { router } from "expo-router";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSupabase } from "@/lib/supabase";
 import { useFetchPostUpvotes, useUpvote } from "@/services/api";
+import { getPublicImageUrl } from "@/utils/supabaseImages";
 
 interface Post {
     id: string;
@@ -27,8 +28,16 @@ interface Post {
 function PostListItem({ post, isDetailedPost }: { post: Post, isDetailedPost?: boolean }) {
     const supabase = useSupabase();
     const { mutate: handleUpvote, isPending: isUpvoting } = useUpvote(post.id, supabase);
+      const [imageUrl, setImageUrl] = useState<string | null>(null);
+    
 
     const { data:upvoteCount } = useFetchPostUpvotes(post.id, supabase)
+    
+      useEffect(() => {
+        if (post?.image) {
+          getPublicImageUrl(post.image, supabase).then(setImageUrl);
+        }
+      }, []);
 
     return (
         <Pressable
@@ -60,7 +69,7 @@ function PostListItem({ post, isDetailedPost }: { post: Post, isDetailedPost?: b
             {/* Image */}
             {post.image && (
                 <Image
-                    source={{ uri: post.image }}
+                    source={{ uri: imageUrl || post.image }}
                     className="h-60 w-full rounded-2xl mb-3"
                     resizeMode="cover"
                 />

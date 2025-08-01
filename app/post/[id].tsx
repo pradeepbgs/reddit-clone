@@ -14,9 +14,8 @@ import { Stack, useLocalSearchParams } from "expo-router";
 import { AntDesign, Entypo, MaterialIcons } from "@expo/vector-icons";
 import PostListItem from "@/components/PostListItem";
 import CommentListItem from "@/components/CommentListItem";
-import posts from "../../assets/data/posts.json";
 import comments from "../../assets/data/comments.json";
-import { useState, useRef, useMemo, useCallback } from "react";
+import { useState, useRef, useMemo, } from "react";
 import { useDeletePostById, useFetchPostById } from "@/services/api";
 import { useSupabase } from "@/lib/supabase";
 
@@ -26,6 +25,7 @@ export default function PostScreen() {
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [replyToId, setReplyToId] = useState<string | null>(null);
   const inputRef = useRef<TextInput>(null);
+
 
   const supabase = useSupabase()
 
@@ -46,6 +46,8 @@ export default function PostScreen() {
   const handleRefresh = () => {
     refetch()
   }
+
+
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
